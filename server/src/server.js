@@ -26,8 +26,11 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://7l80gvd2-3000.asse.devtunnels.ms"
-];
+  process.env.CLIENT_URL
+]
+  .filter(Boolean)
+  .flatMap((origin) => origin.split(","))
+  .map((origin) => origin.trim().replace(/\/$/, ""));
 
 app.use(
   cors({
@@ -37,7 +40,9 @@ app.use(
         return callback(null, true);
       }
 
-      if (allowedOrigins.includes(origin)) {
+      const normalizedOrigin = origin.replace(/\/$/, "");
+
+      if (allowedOrigins.includes(normalizedOrigin)) {
         return callback(null, true);
       }
 
@@ -51,6 +56,15 @@ app.use(
 );
 
 app.use(express.json());
+
+
+app.get("/", (req, res) => {
+  res.json({
+    ok: true,
+    message: "Clinic Management System API is running",
+    health: "/api/health"
+  });
+});
 
 
 app.get(
@@ -207,9 +221,7 @@ const startServer = async () => {
     }
 
 
-    const PORT =
-      process.env.PORT ||
-      5001;
+    const PORT = Number(process.env.PORT) || 5001;
 
 
     app.listen(
@@ -218,7 +230,7 @@ const startServer = async () => {
       () => {
 
         console.log(
-          `Server running on http://localhost:${PORT}`
+          `Server running on port ${PORT}`
         );
 
       }

@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 export const API =
-  process.env.REACT_APP_API_URL || 'http://localhost:5001/api'
+  process.env.REACT_APP_API_URL || 'https://clinic-management-system-pq7y.onrender.com/api'
 
 export const getConfig = () => {
   return {
